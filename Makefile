@@ -21,6 +21,11 @@ build-node-agent:
 	mkdir -p $(DIST_DIR)
 	go build -o $(NODE_AGENT_BIN) ./cmd/headlamp-node-agent
 
+.PHONY: dmg
+dmg:
+	chmod +x scripts/build-dmg.sh
+	./scripts/build-dmg.sh
+
 .PHONY: setup-plan
 setup-plan: build-headlamp
 	$(HEADLAMP_BIN) setup plan
