@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/unboxd-cloud/Headlamp-Agent/schemas/cluster-instance.schema.json",
+  "title": "ClusterInstanceArtifact",
+  "type": "object",
+  "required": ["kind", "id", "name", "type", "distribution", "environment", "endpoint", "status"],
+  "properties": {
+    "kind": { "const": "ClusterInstanceArtifact" },
+    "id": { "type": "string", "pattern": "^cluster:[a-zA-Z0-9_.:-]+$" },
+    "name": { "type": "string" },
+    "type": { "const": "cluster-instance" },
+    "distribution": { "type": "string", "description": "Artifact reference such as distribution:kubernetes or distribution:k3s" },
+    "environment": { "type": "string", "enum": ["local", "dev", "test", "staging", "production", "edge", "unknown"] },
+    "provider": { "type": "string", "examples": ["bare-metal", "vps", "aws", "gcp", "azure", "local"] },
+    "region": { "type": "string" },
+    "endpoint": {
+      "type": "object",
+      "required": ["accessMode"],
+      "properties": {
+        "apiServer": { "type": "string" },
+        "accessMode": { "type": "string", "enum": ["kubeconfig", "service-account", "local", "unknown"] },
+        "contextName": { "type": "string" },
+        "credentialRef": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "version": {
+      "type": "object",
+      "properties": {
+        "kubernetes": { "type": "string" },
+        "k3s": { "type": "string" },
+        "platform": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "topology": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["single-node", "multi-node", "ha", "unknown"] },
+        "controlPlaneNodes": { "type": "integer", "minimum": 0 },
+        "workerNodes": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "cni": { "type": "string" },
+        "serviceCIDR": { "type": "string" },
+        "podCIDR": { "type": "string" },
+        "dnsDomain": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "controller": { "type": "string" },
+        "classes": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "storage": {
+      "type": "object",
+      "properties": {
+        "defaultStorageClass": { "type": "string" },
+        "storageClasses": { "type": "array", "items": { "type": "string" } },
+        "csiDrivers": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "rbacEnabled": { "type": "boolean" },
+        "podSecurity": { "type": "string" },
+        "policyEngines": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "observability": {
+      "type": "object",
+      "properties": {
+        "metricsServer": { "type": "boolean" },
+        "logging": { "type": "string" },
+        "tracing": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "object",
+      "required": ["phase"],
+      "properties": {
+        "phase": { "type": "string", "enum": ["healthy", "degraded", "unreachable", "unknown"] },
+        "lastObservedAt": { "type": "string", "format": "date-time" },
+        "summary": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "relationships": {
+      "type": "object",
+      "properties": {
+        "servers": { "type": "array", "items": { "type": "string" } },
+        "policies": { "type": "array", "items": { "type": "string" } },
+        "artifacts": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
