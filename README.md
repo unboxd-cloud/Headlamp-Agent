@@ -1,18 +1,21 @@
 # Headlamp Agent
 
-**Headlamp Agent** is a local-first desktop operator with a simple chat UI and local LLM support.
+**Headlamp Agent** is a local-first desktop operator tool with a simple chat UI and local LLM support.
 
-It is designed to run on a user-controlled machine, illuminate the current work context, and help the user understand, decide, and act across local files, tools, repositories, and workflows.
+Headlamp is the tool the user uses to operate their machine: it helps them see the current context, understand what is happening, choose the next action, and execute approved actions safely.
 
-This project is intentionally **not coupled to headlamp.dev** and is not Kubernetes-first. The name is used as a product metaphor: a headlamp helps the user see what is in front of them while they work.
+It is designed to run on a user-controlled desktop, work with local models by default, and assist across local files, tools, repositories, scripts, apps, and workflows.
+
+This project is intentionally **not coupled to headlamp.dev** and is not Kubernetes-first. The name is literal and functional: a headlamp is a tool for operating in the dark by lighting up what is directly in front of the user.
 
 ## Product intent
 
 Headlamp Agent should be:
 
 - **Local-first**: local model execution by default, with user-owned data and local storage.
-- **Simple**: a clean desktop chat UI, not a complex enterprise console on day one.
-- **Operator-oriented**: optimized for doing useful work, not only answering questions.
+- **Desktop-native**: a tool for operating from the user's own computer.
+- **Simple**: a clean chat UI with focused operator controls.
+- **Action-oriented**: optimized for understanding, deciding, and doing useful work.
 - **Governed**: actions are reviewed, logged, and permissioned.
 - **Composable**: local tools, model providers, skills, and workflows can be added over time.
 
@@ -31,7 +34,7 @@ The first version focuses on:
 ## Reference architecture
 
 ```txt
-Desktop App
+Desktop Operator Tool
   ├─ Chat UI
   ├─ Settings
   ├─ Conversation History
@@ -86,7 +89,7 @@ Sensitive actions must require explicit user approval before execution, especial
 
 ```txt
 apps/
-  desktop/        Desktop application shell
+  desktop/        Desktop operator UI
   operator/       Local operator service
 
 packages/
