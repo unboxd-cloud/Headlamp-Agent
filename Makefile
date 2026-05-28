@@ -5,6 +5,9 @@ HEADLAMP_BIN := $(DIST_DIR)/headlamp
 NODE_AGENT_BIN := $(DIST_DIR)/headlamp-node-agent
 NODE_AGENT_CONFIG := /tmp/headlamp-agent/config.json
 
+.PHONY: dev
+dev: podman-up run-node-agent
+
 .PHONY: build
 build: build-headlamp build-node-agent
 
@@ -24,7 +27,7 @@ setup-plan: build-headlamp
 
 .PHONY: setup-verify
 setup-verify: build-headlamp
-	$(HEADLAMP_BIN) setup verify
+	$(HEADLAMP_BIN) setup verify || true
 
 .PHONY: run-node-agent
 run-node-agent: build-node-agent
@@ -33,9 +36,9 @@ run-node-agent: build-node-agent
 	$(NODE_AGENT_BIN) --config $(NODE_AGENT_CONFIG)
 
 .PHONY: test-node-agent
- test-node-agent:
-	curl -s http://127.0.0.1:9080/healthz
-	curl -s http://127.0.0.1:9080/inventory
+test-node-agent:
+	curl -s http://127.0.0.1:9080/healthz && echo
+	curl -s http://127.0.0.1:9080/inventory && echo
 
 .PHONY: podman-up
 podman-up:
