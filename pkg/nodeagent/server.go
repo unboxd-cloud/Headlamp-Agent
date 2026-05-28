@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"runtime"
 	"time"
 )
 
@@ -35,21 +34,23 @@ func (s *Server) routes() {
 }
 
 func (s *Server) healthz(w http.ResponseWriter, _ *http.Request) {
-	_ = json.NewEncoder(w).Encode(map[string]any{
-		"status": "ok",
+	writeJSON(w, map[string]any{
+		"status":  "ok",
 		"agentId": s.cfg.AgentID,
-		"hostId": s.cfg.HostID,
-		"time": time.Now().UTC(),
+		"hostId":  s.cfg.HostID,
+		"time":    time.Now().UTC(),
 	})
 }
 
 func (s *Server) inventory(w http.ResponseWriter, _ *http.Request) {
-	_ = json.NewEncoder(w).Encode(map[string]any{
+	writeJSON(w, map[string]any{
 		"agentId": s.cfg.AgentID,
-		"hostId": s.cfg.HostID,
-		"goVersion": runtime.Version(),
-		"os": runtime.GOOS,
-		"arch": runtime.GOARCH,
-		"time": time.Now().UTC(),
+		"hostId":  s.cfg.HostID,
+		"host":    CollectHostInventory(),
 	})
+}
+
+func writeJSON(w http.ResponseWriter, value any) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(value)
 }
