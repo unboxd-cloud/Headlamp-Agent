@@ -1,0 +1,43 @@
+services:
+  surrealdb:
+    image: docker.io/surrealdb/surrealdb:latest
+    container_name: headlamp-surrealdb
+    command:
+      - start
+      - --user
+      - ${SURREALDB_USER:-root}
+      - --pass
+      - ${SURREALDB_PASS:-root}
+      - rocksdb:/data/headlamp.db
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - headlamp-surrealdb:/data
+    restart: unless-stopped
+
+  opa:
+    image: docker.io/openpolicyagent/opa:latest-rootless
+    container_name: headlamp-opa
+    command:
+      - run
+      - --server
+      - --addr=0.0.0.0:8181
+      - /policies
+    ports:
+      - "127.0.0.1:8181:8181"
+    volumes:
+      - ../../policies:/policies:ro,z
+    restart: unless-stopped
+
+  registry:
+    image: docker.io/library/registry:2
+    container_name: headlamp-registry
+    ports:
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - headlamp-registry:/var/lib/registry
+    restart: unless-stopped
+
+volumes:
+  headlamp-surrealdb:
+  headlamp-registry:
