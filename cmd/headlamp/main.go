@@ -20,6 +20,8 @@ func main() {
 	switch section + " " + command {
 	case "setup plan":
 		printSetupPlan()
+	case "setup verify":
+		printSetupVerify()
 	default:
 		usage()
 		os.Exit(1)
@@ -28,9 +30,22 @@ func main() {
 
 func printSetupPlan() {
 	plan := setup.DefaultInstallPlan()
-	encoded, err := json.MarshalIndent(plan, "", "  ")
+	printJSON(plan, "failed to encode install plan")
+}
+
+func printSetupVerify() {
+	report := setup.VerifyLocalKubernetesOperator()
+	printJSON(report, "failed to encode setup verification report")
+
+	if !report.OK {
+		os.Exit(2)
+	}
+}
+
+func printJSON(value any, failureMessage string) {
+	encoded, err := json.MarshalIndent(value, "", "  ")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode install plan: %v\n", err)
+		fmt.Fprintf(os.Stderr, "%s: %v\n", failureMessage, err)
 		os.Exit(1)
 	}
 
@@ -40,4 +55,5 @@ func printSetupPlan() {
 func usage() {
 	fmt.Println("Usage:")
 	fmt.Println("  headlamp setup plan")
+	fmt.Println("  headlamp setup verify")
 }
